@@ -1,0 +1,18 @@
+package br.com.tonypool.atendimento.responses;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class ServicoResponse {
+    private Integer idServico;
+    private String nome;
+    private Double valor;
+}

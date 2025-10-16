@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: atendimentosapi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: coti
+    ports:
+      - "5432:5432"
+    volumes:
+      - atendimentosapi_pgdata:/var/lib/postgresql/data
+    networks:
+      - tonynet
+
+  atendimento-service:
+    build:
+      context: .
+      dockerfile: atendimento-service/Dockerfile
+    ports:
+      - "8083:8083"
+      - "5006:5005"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/atendimentosapi
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: coti
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - tonynet
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - "8082:8082"
+      - "5007:5005"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/atendimentosapi
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: coti
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - tonynet
+
+  cliente-service:
+    build:
+      context: .
+      dockerfile: cliente-service/Dockerfile
+    ports:
+      - "8081:8081"
+      - "5008:5005"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/atendimentosapi
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: coti
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - tonynet
+
+volumes:
+  atendimentosapi_pgdata:
+    external: true
+
+networks:
+  tonynet:

@@ -1,0 +1,106 @@
+2025-10-16 08:39:07.658  INFO 8128 --- [restartedMain] b.c.t.auth.AuthServiceApplication        : Starting AuthServiceApplication using Java 17.0.12 on DESKTOP-HLR4AN3 with PID 8128 (C:\Users\tonyp\OneDrive\Documentos\curso_java\workspace\microsservicos-atendimento\auth-service\target\classes started by tonyp in C:\Users\tonyp\OneDrive\Documentos\curso_java\workspace\microsservicos-atendimento\auth-service)
+2025-10-16 08:39:07.670  INFO 8128 --- [restartedMain] b.c.t.auth.AuthServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2025-10-16 08:39:07.749  INFO 8128 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-10-16 08:39:07.749  INFO 8128 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-10-16 08:39:08.830  INFO 8128 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-16 08:39:08.911  INFO 8128 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 4 JPA repository interfaces.
+2025-10-16 08:39:09.193  INFO 8128 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a6ac8b13-3378-3d05-a7f5-b77265f33def
+2025-10-16 08:39:09.905  INFO 8128 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2025-10-16 08:39:09.916  INFO 8128 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-16 08:39:09.917  INFO 8128 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2025-10-16 08:39:10.024  INFO 8128 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-16 08:39:10.024  INFO 8128 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2274 ms
+2025-10-16 08:39:10.264  INFO 8128 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-16 08:39:10.324  INFO 8128 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-16 08:39:10.503  INFO 8128 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-16 08:39:10.610  INFO 8128 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-16 08:39:10.784  INFO 8128 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-16 08:39:10.804  INFO 8128 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2025-10-16 08:39:11.612  INFO 8128 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-16 08:39:11.622  INFO 8128 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-16 08:39:12.414  WARN 8128 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-16 08:39:12.492  WARN 8128 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
+2025-10-16 08:39:13.579  WARN 8128 --- [restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: f21f614a-8c43-4603-bca6-800d0c385d41
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-10-16 08:39:13.904  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3b642216, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3fc98aa2, org.springframework.security.web.context.SecurityContextPersistenceFilter@432c4deb, org.springframework.security.web.header.HeaderWriterFilter@319d8f3a, org.springframework.security.web.authentication.logout.LogoutFilter@e3e2eea, br.com.tonypool.auth.security.JwtSecurity@549f5b29, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3207802d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@41145fff, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6cb60786, org.springframework.security.web.session.SessionManagementFilter@4a20bcdc, org.springframework.security.web.access.ExceptionTranslationFilter@50ce4807, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@580ecde3]
+2025-10-16 08:39:13.911  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/v2/api-docs']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.911  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/v2/api-docs']
+2025-10-16 08:39:13.912  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-resources']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.913  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-resources']
+2025-10-16 08:39:13.913  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-resources/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.914  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-resources/**']
+2025-10-16 08:39:13.914  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/configuration/ui']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.914  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/configuration/ui']
+2025-10-16 08:39:13.914  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/configuration/security']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.914  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/configuration/security']
+2025-10-16 08:39:13.914  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-ui.html']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.915  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-ui.html']
+2025-10-16 08:39:13.915  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/webjars/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.915  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/webjars/**']
+2025-10-16 08:39:13.915  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/v3/api-docs/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.916  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/v3/api-docs/**']
+2025-10-16 08:39:13.916  WARN 8128 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-ui/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 08:39:13.916  INFO 8128 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-ui/**']
+2025-10-16 08:39:14.572  INFO 8128 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2025-10-16 08:39:14.907  INFO 8128 --- [restartedMain] b.c.t.auth.AuthServiceApplication        : Started AuthServiceApplication in 7.903 seconds (JVM running for 9.035)
+2025-10-16 08:40:48.023  INFO 8128 --- [http-nio-8082-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-16 08:40:48.023  INFO 8128 --- [http-nio-8082-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-16 08:40:48.039  INFO 8128 --- [http-nio-8082-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-10-16 10:10:07.170  WARN 8128 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=18m54s391ms476µs800ns).
+2025-10-16 10:48:08.666  INFO 20012 --- [restartedMain] b.c.t.auth.AuthServiceApplication        : Starting AuthServiceApplication using Java 17.0.12 on DESKTOP-HLR4AN3 with PID 20012 (C:\Users\tonyp\OneDrive\Documentos\curso_java\workspace\microsservicos-atendimento\auth-service\target\classes started by tonyp in C:\Users\tonyp\OneDrive\Documentos\curso_java\workspace\microsservicos-atendimento\auth-service)
+2025-10-16 10:48:08.668  INFO 20012 --- [restartedMain] b.c.t.auth.AuthServiceApplication        : No active profile set, falling back to 1 default profile: "default"
+2025-10-16 10:48:08.733  INFO 20012 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-10-16 10:48:08.733  INFO 20012 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-10-16 10:48:09.820  INFO 20012 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-16 10:48:09.903  INFO 20012 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 73 ms. Found 4 JPA repository interfaces.
+2025-10-16 10:48:10.187  INFO 20012 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a6ac8b13-3378-3d05-a7f5-b77265f33def
+2025-10-16 10:48:10.885  INFO 20012 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2025-10-16 10:48:10.898  INFO 20012 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-16 10:48:10.898  INFO 20012 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.63]
+2025-10-16 10:48:11.046  INFO 20012 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-16 10:48:11.046  INFO 20012 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2312 ms
+2025-10-16 10:48:11.311  INFO 20012 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-16 10:48:11.377  INFO 20012 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.9.Final
+2025-10-16 10:48:11.583  INFO 20012 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-10-16 10:48:11.702  INFO 20012 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-16 10:48:11.909  INFO 20012 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-16 10:48:11.937  INFO 20012 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2025-10-16 10:48:12.767  INFO 20012 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-10-16 10:48:12.776  INFO 20012 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-16 10:48:13.350  WARN 20012 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-16 10:48:13.415  WARN 20012 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
+2025-10-16 10:48:13.900  WARN 20012 --- [restartedMain] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: c9e04e42-ed3a-4200-a2e0-10670ca35cda
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-10-16 10:48:14.036  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@417f0d8f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3a78471e, org.springframework.security.web.context.SecurityContextPersistenceFilter@1eea0db3, org.springframework.security.web.header.HeaderWriterFilter@10295058, org.springframework.security.web.authentication.logout.LogoutFilter@319d8f3a, br.com.tonypool.auth.security.JwtSecurity@71e93cb0, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@39ce0eaa, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@226bf4ec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@50938070, org.springframework.security.web.session.SessionManagementFilter@324d9fbb, org.springframework.security.web.access.ExceptionTranslationFilter@5b1e5e9, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@358021ef]
+2025-10-16 10:48:14.046  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/v2/api-docs']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.046  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/v2/api-docs']
+2025-10-16 10:48:14.046  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-resources']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.046  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-resources']
+2025-10-16 10:48:14.046  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-resources/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.047  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-resources/**']
+2025-10-16 10:48:14.047  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/configuration/ui']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.047  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/configuration/ui']
+2025-10-16 10:48:14.047  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/configuration/security']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.047  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/configuration/security']
+2025-10-16 10:48:14.047  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-ui.html']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.047  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-ui.html']
+2025-10-16 10:48:14.047  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/webjars/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.048  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/webjars/**']
+2025-10-16 10:48:14.048  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/v3/api-docs/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.048  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/v3/api-docs/**']
+2025-10-16 10:48:14.048  WARN 20012 --- [restartedMain] o.s.s.c.a.web.builders.WebSecurity       : You are asking Spring Security to ignore Ant [pattern='/swagger-ui/**']. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+2025-10-16 10:48:14.048  INFO 20012 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will not secure Ant [pattern='/swagger-ui/**']
+2025-10-16 10:48:14.652  INFO 20012 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2025-10-16 10:48:14.992  INFO 20012 --- [restartedMain] b.c.t.auth.AuthServiceApplication        : Started AuthServiceApplication in 6.959 seconds (JVM running for 8.064)
+2025-10-16 10:49:03.784  INFO 20012 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-16 10:49:03.786  INFO 20012 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-16 10:49:03.790  INFO 20012 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2025-10-16 17:00:58.958  WARN 20012 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4h43m17s503ms529µs500ns).
