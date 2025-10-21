@@ -19,6 +19,7 @@ public class ClienteDTO {
     private String email;
     private String telefone;
     private Boolean is2FAEnabled;
+    private String secret2FA;
 
 
 }

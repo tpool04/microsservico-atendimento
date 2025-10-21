@@ -310,7 +310,6 @@ public class AtendimentosController {
 
 
 	@ApiOperation("Endpoint para consultar atendimentos por id do cliente.")
-    //@GetMapping("/por-cliente/{id}")
     @PostMapping("/por-cliente")
     public ResponseEntity<Map<Integer, List<AtendimentoGetResponse>>> buscarPorClientes(@RequestBody List<Integer> ids) {
         try {
@@ -347,6 +346,7 @@ public class AtendimentosController {
         }
     }
 
+    @GetMapping("/por-cliente/{id}")
     public ResponseEntity<List<Atendimento>> buscarAtendimentosPorCliente(@PathVariable("id") Integer idCliente) {
         try {
             List<Atendimento> atendimentos = atendimentoRepository.findByIdCliente(idCliente);

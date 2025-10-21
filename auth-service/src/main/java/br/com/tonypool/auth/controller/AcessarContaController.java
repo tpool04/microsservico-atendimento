@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.tonypool.auth.responses.AcessarContaPostDTO;
 import br.com.tonypool.auth.model.Cliente;
+import br.com.tonypool.auth.dto.ClienteDTO;
 import br.com.tonypool.auth.helpers.MD5Helper;
 import br.com.tonypool.auth.repository.IClienteRepository;
 import br.com.tonypool.auth.requests.AcessarContaPostRequest;
@@ -77,40 +78,58 @@ public class AcessarContaController {
 	@Autowired
 	private br.com.tonypool.auth.service.TwoFactorAuthService twoFactorAuthService;
 
-	@ApiOperation("Endpoint para confirmar o c�digo 2FA e gerar token.")
+	@ApiOperation("Endpoint para confirmar o código 2FA e gerar token.")
 	@PostMapping("/api/confirmar-2fa")
 	public ResponseEntity<AcessarContaPostDTO> confirmar2FA(@RequestBody Confirmar2FARequest request) {
-        try {
-            Cliente cliente = clienteRepository.findById(request.getIdCliente()).orElse(null);
-            if (cliente == null || !Boolean.TRUE.equals(cliente.getIs2FAEnabled())) {
-                logger.warn("[2FA] Cliente inv�lido ou 2FA n�o est� ativado: idCliente={}", request.getIdCliente());
-                AcessarContaPostDTO erro = new AcessarContaPostDTO(null, "Cliente inv�lido ou 2FA n�o est� ativado.", request.getIdCliente(), false, null);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-            }
-            if (cliente.getSecret2FA() == null || cliente.getSecret2FA().isEmpty()) {
-                logger.error("[2FA] Secret do cliente est� nulo ou vazio! idCliente={}, secret2FA={}", request.getIdCliente(), cliente.getSecret2FA());
-                AcessarContaPostDTO erro = new AcessarContaPostDTO(null, "2FA n�o est� ativado para este cliente. Ative o 2FA antes de validar o c�digo.", request.getIdCliente(), false, null);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-            }
-            logger.info("[2FA] Secret do cliente para valida��o: idCliente={}, secret2FA={}", request.getIdCliente(), cliente.getSecret2FA());
-            boolean valido = twoFactorAuthService.verifyCode(cliente, request.getCodigo());
-            if (!valido) {
-                logger.warn("[2FA] C�digo 2FA inv�lido para idCliente={}", request.getIdCliente());
-                AcessarContaPostDTO erro = new AcessarContaPostDTO(null, "C�digo 2FA inv�lido.", request.getIdCliente(), false, null);
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
-            }
-            String perfilNome = cliente.getPerfil() != null ? cliente.getPerfil().getNome() : null;
-            String token = TokenSecurity.generateToken(cliente.getCpf(), cliente.getIdCliente(), perfilNome);
-            logger.info("[2FA] C�digo v�lido, token gerado para idCliente={}", cliente.getIdCliente());
-            AcessarContaPostDTO dto = new AcessarContaPostDTO(token, cliente.getNome(), cliente.getIdCliente(), true, perfilNome);
-            return ResponseEntity.status(HttpStatus.OK).body(dto);
-        } catch (Exception e) {
-            logger.error("[2FA] Erro inesperado: {} - {}", e.getClass().getSimpleName(), e.getMessage(), e);
-            String mensagem = "Erro inesperado ao validar o 2FA. Tente novamente ou contate o suporte.";
-            AcessarContaPostDTO erro = new AcessarContaPostDTO(null, mensagem, request.getIdCliente(), false, null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
-        }
-    }
+	    try {
+	        Cliente cliente = clienteRepository.findById(request.getIdCliente()).orElse(null);
+
+	        if (cliente == null || !Boolean.TRUE.equals(cliente.getIs2FAEnabled())) {
+	            logger.warn("[2FA] Cliente inválido ou 2FA não está ativado: idCliente={}", request.getIdCliente());
+	            AcessarContaPostDTO erro = new AcessarContaPostDTO(null, "Cliente inválido ou 2FA não está ativado.", request.getIdCliente(), false, null);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	        }
+
+	        if (cliente.getSecret2FA() == null || cliente.getSecret2FA().isEmpty()) {
+	            logger.error("[2FA] Secret do cliente está nulo ou vazio! idCliente={}, secret2FA={}", request.getIdCliente(), cliente.getSecret2FA());
+	            AcessarContaPostDTO erro = new AcessarContaPostDTO(null, "2FA não está ativado para este cliente. Ative o 2FA antes de validar o código.", request.getIdCliente(), false, null);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	        }
+
+	        ClienteDTO clienteDTO = new ClienteDTO(
+	            cliente.getIdCliente(),
+	            cliente.getNome(),
+	            cliente.getCpf(),
+	            cliente.getEmail(),
+	            cliente.getTelefone(),
+	            cliente.getIs2FAEnabled(),
+	            cliente.getSecret2FA()
+	        );
+
+	        logger.info("[2FA] Secret do cliente para validação: idCliente={}, secret2FA={}", request.getIdCliente(), cliente.getSecret2FA());
+	        boolean valido = twoFactorAuthService.verifyCode(clienteDTO, request.getCodigo());
+
+	        if (!valido) {
+	            logger.warn("[2FA] Código 2FA inválido para idCliente={}", request.getIdCliente());
+	            AcessarContaPostDTO erro = new AcessarContaPostDTO(null, "Código 2FA inválido.", request.getIdCliente(), false, null);
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
+	        }
+
+	        String perfilNome = cliente.getPerfil() != null ? cliente.getPerfil().getNome() : null;
+	        String token = TokenSecurity.generateToken(cliente.getCpf(), cliente.getIdCliente(), perfilNome);
+	        logger.info("[2FA] Código válido, token gerado para idCliente={}", cliente.getIdCliente());
+
+	        AcessarContaPostDTO dto = new AcessarContaPostDTO(token, cliente.getNome(), cliente.getIdCliente(), true, perfilNome);
+	        return ResponseEntity.status(HttpStatus.OK).body(dto);
+
+	    } catch (Exception e) {
+	        logger.error("[2FA] Erro inesperado: {} - {}", e.getClass().getSimpleName(), e.getMessage(), e);
+	        String mensagem = "Erro inesperado ao validar o 2FA. Tente novamente ou contate o suporte.";
+	        AcessarContaPostDTO erro = new AcessarContaPostDTO(null, mensagem, request.getIdCliente(), false, null);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
+	    }
+	}
+
 
 	@ApiOperation("Endpoint para consultar o perfil do cliente autenticado.")
 	@RequestMapping(value = "/api/perfil/{id}", method = RequestMethod.GET)
