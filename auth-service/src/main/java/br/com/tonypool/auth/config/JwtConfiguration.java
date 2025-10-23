@@ -21,6 +21,7 @@ public class JwtConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/criar-conta").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/criar-conta").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/acessar-conta").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/servicos").permitAll()
