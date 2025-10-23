@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.tonypool.cliente.dto.ClienteCompletoDTO;
 import br.com.tonypool.cliente.dto.ClienteDTO;
@@ -201,6 +202,54 @@ public class ClienteController {
         } catch (Exception e) {
             logger.error("Erro ao consultar cliente por ID: {}", e.getMessage(), e);
             return ResponseEntity.status(500).build();
+        }
+    }
+
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation("Lista todos os clientes.")
+    @GetMapping("/listar-clientes")
+    public ResponseEntity<List<ClienteDTO>> listarTodosClientes() {
+        try {
+            Iterable<Cliente> clientes = clienteService.listarTodos();
+            List<ClienteDTO> resposta = new ArrayList<>();
+            for (Cliente cliente : clientes) {
+                resposta.add(new ClienteDTO(
+                    cliente.getIdCliente(),
+                    cliente.getNome(),
+                    cliente.getCpf(),
+                    cliente.getEmail(),
+                    cliente.getTelefone(),
+                    cliente.getIs2FAEnabled()
+                ));
+            }
+            return ResponseEntity.ok(resposta);
+        } catch (Exception e) {
+            logger.error("Erro ao listar todos os clientes: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    // New endpoint: excluir cliente por ID (remove endereço primeiro se existir)
+    @PreAuthorize("hasRole('ADMIN')")
+    @ApiOperation("Exclui um cliente pelo ID.")
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<String> excluirCliente(@PathVariable("id") Integer id) {
+        try {
+            Cliente cliente = clienteRepository.findByIdCliente(id);
+            if (cliente == null) {
+                return ResponseEntity.status(404).body("Cliente não encontrado.");
+            }
+            Endereco endereco = clienteService.buscarEnderecoPorCliente(cliente);
+            if (endereco != null) {
+                enderecoRepository.delete(endereco);
+            }
+            clienteRepository.delete(cliente);
+            return ResponseEntity.ok("Cliente excluído com sucesso.");
+        } catch (Exception e) {
+            logger.error("Erro ao excluir cliente: {}", e.getMessage(), e);
+            return ResponseEntity.status(500).body("Erro ao excluir cliente.");
         }
     }
 
