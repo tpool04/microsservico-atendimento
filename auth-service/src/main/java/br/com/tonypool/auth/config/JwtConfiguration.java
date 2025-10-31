@@ -2,10 +2,10 @@ package br.com.tonypool.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -15,6 +15,7 @@ import br.com.tonypool.auth.security.JwtSecurity;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(1)
 public class JwtConfiguration {
 
     @Bean
@@ -24,6 +25,7 @@ public class JwtConfiguration {
                 .antMatchers(HttpMethod.POST, "/criar-conta").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/criar-conta").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/acessar-conta").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/auth/password/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/servicos").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/profissionais").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/2fa/ativar*").permitAll()

@@ -46,6 +46,11 @@ public class JwtSecurity extends OncePerRequestFilter {
 			chain.doFilter(request, response);
 			return;
 		}
+		// Libera endpoints de recuperação de senha sem exigir JWT
+		if (uri.startsWith("/api/auth/password")) {
+			chain.doFilter(request, response);
+			return;
+		}
 		try {
 			if (checkJWTToken(request, response)) {
 				Claims claims = validateToken(request);
