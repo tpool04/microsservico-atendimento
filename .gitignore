@@ -32,3 +32,31 @@ build/
 ### VS Code ###
 .vscode/
 src/main/resources/application.properties
+
+# Ignore Maven module build directories and jars
+**/target/
+**/target/*.jar
+**/target/**/*.jar
+
+# Ignore IDEA artifacts and logs
+*.log
+
+# Ignore service logs and compressed logs
+**/logs/
+**/*.log*
+**/*.log.gz
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled classes and other build outputs
+**/*.class
+**/*.jar
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Keep this to allow local properties if needed
+# /auth-service/src/main/resources/application.properties.local
