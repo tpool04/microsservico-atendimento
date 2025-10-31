@@ -27,4 +27,6 @@ EXPOSE 8083
 COPY --from=build /build/atendimento-service/target/*.jar app.jar
 
 # Usa o script para esperar o banco antes de iniciar
-ENTRYPOINT ["/wait-for-it.sh", "db:5432", "--", "java", "-jar", "app.jar"]
+#ENTRYPOINT ["/wait-for-it.sh", "db:5432", "--", "java", "-jar", "app.jar"]
+ENTRYPOINT ["/wait-for-it.sh", "dpg-d3ft68umcj7s73et2v40-a:5432", "--", "java", "-jar", "app.jar"]
+
