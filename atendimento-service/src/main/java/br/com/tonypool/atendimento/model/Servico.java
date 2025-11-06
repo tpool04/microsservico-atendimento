@@ -52,4 +52,9 @@ public class Servico {
 	
 	@OneToMany(mappedBy = "servico")
 	private List<Atendimento> atendimentos;
+	
+	public Servico(String nome, Double valor) {
+        this.nome = nome;
+        this.valor = valor;
+    }
 }

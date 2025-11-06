@@ -1,16 +1,60 @@
 version: "3.8"
 
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - tonynet
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - tonynet
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: atendimentosapi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: coti
+    ports:
+      - "5432:5432"
+    volumes:
+      - atendimentosapi_pgdata:/var/lib/postgresql/data
+    networks:
+      - tonynet
+
   atendimento-service:
     build:
       context: .
       dockerfile: atendimento-service/Dockerfile
     ports:
       - "8083:8083"
+      - "5006:5005"
+    depends_on:
+      - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d3ft68umcj7s73et2v40-a:5432/attendance_db_lhsz
-      SPRING_DATASOURCE_USERNAME: attendance_db_lhsz_user
-      SPRING_DATASOURCE_PASSWORD: wct6r2f1UvYQo9kwVet0tSxlY539FPsv
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/atendimentosapi
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: coti
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     networks:
       - tonynet
@@ -21,11 +65,16 @@ services:
       dockerfile: auth-service/Dockerfile
     ports:
       - "8082:8082"
+      - "5007:5005"
+    depends_on:
+      - db
+      - kafka
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d3ft68umcj7s73et2v40-a:5432/attendance_db_lhsz
-      SPRING_DATASOURCE_USERNAME: attendance_db_lhsz_user
-      SPRING_DATASOURCE_PASSWORD: wct6r2f1UvYQo9kwVet0tSxlY539FPsv
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/atendimentosapi
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: coti
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - tonynet
 
@@ -35,13 +84,22 @@ services:
       dockerfile: cliente-service/Dockerfile
     ports:
       - "8081:8081"
+      - "5008:5005"
+    depends_on:
+      - db
+      - kafka
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://dpg-d3ft68umcj7s73et2v40-a:5432/attendance_db_lhsz
-      SPRING_DATASOURCE_USERNAME: attendance_db_lhsz_user
-      SPRING_DATASOURCE_PASSWORD: wct6r2f1UvYQo9kwVet0tSxlY539FPsv
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/atendimentosapi
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: coti
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - tonynet
+
+volumes:
+  atendimentosapi_pgdata:
+    external: true
 
 networks:
   tonynet:

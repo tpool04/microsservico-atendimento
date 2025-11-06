@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +37,7 @@ import br.com.tonypool.atendimento.model.Atendimento;
 import br.com.tonypool.atendimento.model.Profissional;
 import br.com.tonypool.atendimento.model.Servico;
 import br.com.tonypool.atendimento.repository.IAtendimentoRepository;
-import br.com.tonypool.atendimento.client.ClienteServiceClient;
+//import br.com.tonypool.atendimento.client.ClienteServiceClient;
 
 import br.com.tonypool.atendimento.repository.IProfissionalRepository;
 import br.com.tonypool.atendimento.repository.IServicoRepository;
@@ -46,6 +49,8 @@ import br.com.tonypool.atendimento.security.TokenSecurity;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import br.com.tonypool.atendimento.service.ClienteProducer;
+import br.com.tonypool.atendimento.cache.ClienteCache;
 
 @Transactional
 @RestController
@@ -58,11 +63,21 @@ public class AtendimentosController {
 	@Autowired
 	private IServicoRepository servicoRepository;
 	
-	@Autowired
-    private ClienteServiceClient clienteServiceClient;
+//	@Autowired
+//    private ClienteServiceClient clienteServiceClient;
 
 	@Autowired
 	private IProfissionalRepository profissionalRepository;
+	
+	@Autowired
+	private ClienteProducer clienteProducer;
+	
+	@Autowired
+	private ClienteCache clienteCache;
+
+
+	private static final int MAX_TENTATIVAS = 50;
+	private static final int INTERVALO_MS = 100;
 
 	private static final Logger logger = LoggerFactory.getLogger(AtendimentosController.class);
 
@@ -146,6 +161,26 @@ public class AtendimentosController {
 		        if (atendimentos == null || atendimentos.isEmpty()) {
 		            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		        }
+		        
+		     // Solicitar dados do cliente via Kafka
+		        String correlationId = UUID.randomUUID().toString();
+		        clienteProducer.solicitarClientePorId(idCliente, correlationId);
+		        
+		        ClienteDTO cliente = null;
+		        int tentativas = 0;
+		        while (tentativas < 50) {
+		            cliente = clienteCache.buscar(correlationId);
+		            if (cliente != null) break;
+		            Thread.sleep(100);
+		            tentativas++;
+		        }
+
+		        if (cliente == null) {
+		            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+		                .body(new ErrorResponse("Cliente não retornou em tempo hábil."));
+		        }
+
+		        clienteCache.remover(correlationId);
 
 		        List<AtendimentoGetResponse> lista = new ArrayList<>();
 		        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -185,7 +220,22 @@ public class AtendimentosController {
 	        throw new Exception("CPF não encontrado no token.");
 	    }
 
-	    ClienteDTO cliente = clienteServiceClient.buscarPorCpf(cpf);
+	 // Enviar solicitação via Kafka
+	    String correlationId = UUID.randomUUID().toString();
+	    clienteProducer.solicitarClientePorCpf(cpf, correlationId);
+
+	    // Aguardar resposta (máximo 5 segundos)
+	    ClienteDTO cliente = null;
+	    int tentativas = 0;
+	    while (tentativas < 50) {
+	        cliente = clienteCache.buscar(correlationId);
+	        if (cliente != null) break;
+	        Thread.sleep(100);
+	        tentativas++;
+	    }
+
+	    clienteCache.remover(correlationId);
+	    
 	    if (cliente == null) {
 	        throw new Exception("Cliente não encontrado para o CPF extraído do token.");
 	    }
@@ -287,7 +337,27 @@ public class AtendimentosController {
 	        }
 
 	        // Buscar dados do cliente via Feign
-	        ClienteDTO cliente = clienteServiceClient.buscarPorId(idCliente);
+	       // ClienteDTO cliente = clienteServiceClient.buscarPorId(idCliente);
+	        
+	     // Enviar solicitação via Kafka
+	        String correlationId = UUID.randomUUID().toString();
+	        clienteProducer.solicitarClientePorId(idCliente, correlationId);
+	        
+	     // Esperar resposta (máximo 5 segundos)
+	        ClienteDTO cliente = null;
+	        int tentativas = 0;
+	        while (tentativas < MAX_TENTATIVAS) {
+	            cliente = clienteCache.buscar(correlationId);
+	            if (cliente != null) break;
+	            Thread.sleep(INTERVALO_MS); // espera 100ms
+	            tentativas++;
+	        }
+
+	        if (cliente == null) {
+	            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body("Cliente não retornou em tempo hábil.");
+	        }
+
+	        clienteCache.remover(correlationId);
 
 	        // Montar resposta
 	        AtendimentoGetResponse response = new AtendimentoGetResponse();
@@ -317,12 +387,22 @@ public class AtendimentosController {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             for (Integer id : ids) {
                 List<Atendimento> atendimentos = atendimentoRepository.findByIdCliente(id);
+                
+             // Solicitar dados do cliente via Kafka
+                String correlationId = UUID.randomUUID().toString();
+                clienteProducer.solicitarClientePorId(id, correlationId);
+                
                 ClienteDTO clienteDTO = null;
-                try {
-                    clienteDTO = clienteServiceClient.buscarPorId(id);
-                } catch (Exception e) {
-                    clienteDTO = null;
+                int tentativas = 0;
+                while (tentativas < MAX_TENTATIVAS) {
+                    clienteDTO = clienteCache.buscar(correlationId);
+                    if (clienteDTO != null) break;
+                    Thread.sleep(INTERVALO_MS);
+                    tentativas++;
                 }
+                clienteCache.remover(correlationId);
+                
+             // Montar lista de resposta
                 List<AtendimentoGetResponse> dtoList = new ArrayList<>();
                 for (Atendimento atendimento : atendimentos) {
                     AtendimentoGetResponse dto = new AtendimentoGetResponse(

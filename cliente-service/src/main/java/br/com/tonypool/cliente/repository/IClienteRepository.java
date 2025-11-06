@@ -29,8 +29,11 @@ public interface IClienteRepository extends JpaRepository<Cliente, Integer> {
 	@Query("select c from Cliente c where c.cpf = :cpf and c.senha = :senha and c.is2FAEnabled = true")
 	public Cliente findByCpfAndSenhaAnd2FA(@Param("cpf") String cpf, @Param("senha") String senha);
 	
-	public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
-	    Optional<Cliente> findByCpf(String cpf);
-	}
+	@Query("SELECT c FROM Cliente c WHERE c.cpf = :cpf")
+    Optional<Cliente> findByCpf2(@Param("cpf") String cpf);
+	
+//	public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+//	    Optional<Cliente> findByCpf(String cpf);
+//	}
 
 }

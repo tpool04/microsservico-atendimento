@@ -1,5 +1,7 @@
 package br.com.tonypool.atendimento.dto;
 
+
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
 public class ClienteDTO {
     private Integer id;
     private String nome;
@@ -20,5 +21,5 @@ public class ClienteDTO {
     private String telefone;
     private Boolean is2FAEnabled;
 
-
+   
 }

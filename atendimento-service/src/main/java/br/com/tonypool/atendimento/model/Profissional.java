@@ -42,6 +42,12 @@ public class Profissional {
 	
 	@OneToMany(mappedBy = "profissional")
 	private List<Atendimento> atendimentos;
+	
+	public Profissional(String nome, String telefone) {
+	    this.nome = nome;
+	    this.telefone = telefone;
+	}
+
 }
 
 

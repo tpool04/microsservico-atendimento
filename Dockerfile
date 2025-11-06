@@ -15,10 +15,10 @@ RUN apt-get update && apt-get install -y curl
 RUN curl -o /wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
     && chmod +x /wait-for-it.sh
 
-# Variáveis de ambiente para banco do Render
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-d3ft68umcj7s73et2v40-a:5432/attendance_db_lhsz
-ENV SPRING_DATASOURCE_USERNAME=attendance_db_lhsz_user
-ENV SPRING_DATASOURCE_PASSWORD=wct6r2f1UvYQo9kwVet0tSxlY539FPsv
+# Variáveis de ambiente
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/atendimentosapi
+ENV SPRING_DATASOURCE_USERNAME=postgres
+ENV SPRING_DATASOURCE_PASSWORD=coti
 ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
 EXPOSE 8083
@@ -27,4 +27,6 @@ EXPOSE 8083
 COPY --from=build /build/atendimento-service/target/*.jar app.jar
 
 # Usa o script para esperar o banco antes de iniciar
+#ENTRYPOINT ["/wait-for-it.sh", "db:5432", "--", "java", "-jar", "app.jar"]
 ENTRYPOINT ["/wait-for-it.sh", "dpg-d3ft68umcj7s73et2v40-a:5432", "--", "java", "-jar", "app.jar"]
+

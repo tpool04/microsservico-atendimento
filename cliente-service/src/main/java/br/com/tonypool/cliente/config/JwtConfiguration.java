@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 
 import br.com.tonypool.cliente.security.JwtSecurity;
 
@@ -16,6 +17,9 @@ import br.com.tonypool.cliente.security.JwtSecurity;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class JwtConfiguration {
+
+    @Value("${security.jwt.enabled:true}")
+    private boolean jwtEnabled;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -33,7 +37,9 @@ public class JwtConfiguration {
                 .antMatchers("/api/clientes/**").permitAll() // libera os endpoints da API
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
-        http.addFilterBefore(new JwtSecurity(), UsernamePasswordAuthenticationFilter.class);
+        if (this.jwtEnabled) {
+            http.addFilterBefore(new JwtSecurity(), UsernamePasswordAuthenticationFilter.class);
+        }
         return http.build();
     }
 

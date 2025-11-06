@@ -5,6 +5,10 @@ spring:
   application:
     name: auth-service
 
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   datasource:
     url: jdbc:postgresql://localhost:5432/atendimentosapi
     username: postgres
@@ -19,6 +23,18 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: auth-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 cliente-service:
   url: http://localhost:8081
-

@@ -3,7 +3,7 @@ package br.com.tonypool.auth.controller;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,9 @@ import br.com.tonypool.auth.model.Cliente;
 import br.com.tonypool.auth.repository.IClienteRepository;
 import br.com.tonypool.auth.repository.IPerfilRepository;
 import br.com.tonypool.auth.requests.CriarContaPostRequest;
+import br.com.tonypool.auth.service.EnderecoProducer;
 import io.swagger.annotations.ApiOperation;
+
 
 @RestController
 @RequestMapping("/api")
@@ -29,6 +31,13 @@ public class CriarContaController {
 
     @Autowired
     private ClienteServiceClient clienteServiceClient;
+    
+    @Autowired
+    private EnderecoProducer enderecoProducer;
+
+    // Default: true = send via Kafka. Set to false for tests to call ClienteServiceClient directly.
+    @Value("${app.endereco.via-kafka:true}")
+    private boolean enderecoViaKafka;
 
     @ApiOperation("Endpoint para cadastro de conta do cliente.")
     @PostMapping("/criar-conta")
@@ -37,9 +46,15 @@ public class CriarContaController {
             // Salva o cliente e comita a transação
             Cliente cliente = salvarCliente(request);
 
-            // Monta o endereço e envia para o cliente-service
+            // Monta o endereço
             EnderecoDTO enderecoDTO = montarEnderecoDTO(request);
-            clienteServiceClient.vincularEndereco(cliente.getIdCliente().longValue(), enderecoDTO);
+
+            if (enderecoViaKafka) {
+                enderecoProducer.enviarEndereco(cliente.getIdCliente(), enderecoDTO);
+            } else {
+                // Chamada direta ao cliente-service para testes (garante que o cliente exista lá)
+                clienteServiceClient.vincularEndereco(cliente.getIdCliente().longValue(), enderecoDTO);
+            }
 
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body("Parabéns! Sua conta foi criada com sucesso.");
