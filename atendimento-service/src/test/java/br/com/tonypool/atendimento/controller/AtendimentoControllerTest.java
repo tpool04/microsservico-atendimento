@@ -1,5 +1,6 @@
 package br.com.tonypool.atendimento.controller;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,7 +68,7 @@ class AtendimentoControllerTest {
         clienteDTO.setNome("Tony");
         clienteDTO.setCpf("12345678900");
 
-        when(clienteCache.buscar(toString())).thenReturn(clienteDTO);
+        when(clienteCache.buscar(anyString())).thenReturn(clienteDTO);
 
         mockMvc.perform(get("/api/atendimentos/por-cliente/1"))
             .andExpect(status().isOk())
@@ -77,4 +78,3 @@ class AtendimentoControllerTest {
     }
 
 }
-

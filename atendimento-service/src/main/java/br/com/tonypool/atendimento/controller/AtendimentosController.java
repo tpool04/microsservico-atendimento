@@ -427,10 +427,43 @@ public class AtendimentosController {
     }
 
     @GetMapping("/por-cliente/{id}")
-    public ResponseEntity<List<Atendimento>> buscarAtendimentosPorCliente(@PathVariable("id") Integer idCliente) {
+    public ResponseEntity<List<AtendimentoGetResponse>> buscarAtendimentosPorCliente(@PathVariable("id") Integer idCliente) {
         try {
             List<Atendimento> atendimentos = atendimentoRepository.findByIdCliente(idCliente);
-            return ResponseEntity.ok(atendimentos);
+
+            // Solicitar dados do cliente via Kafka
+            String correlationId = UUID.randomUUID().toString();
+            clienteProducer.solicitarClientePorId(idCliente, correlationId);
+
+            ClienteDTO clienteDTO = null;
+            int tentativas = 0;
+            while (tentativas < MAX_TENTATIVAS) {
+                clienteDTO = clienteCache.buscar(correlationId);
+                if (clienteDTO != null) break;
+                Thread.sleep(INTERVALO_MS);
+                tentativas++;
+            }
+
+            clienteCache.remover(correlationId);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            List<AtendimentoGetResponse> lista = new ArrayList<>();
+            for (Atendimento atendimento : atendimentos) {
+                AtendimentoGetResponse dto = new AtendimentoGetResponse(
+                    atendimento.getIdAtendimento(),
+                    formatter.format(atendimento.getDataHora()),
+                    atendimento.getServico().getNome(),
+                    atendimento.getServico().getValor(),
+                    atendimento.getProfissional().getNome(),
+                    atendimento.getProfissional().getTelefone(),
+                    clienteDTO != null ? clienteDTO.getNome() : "",
+                    clienteDTO != null ? clienteDTO.getCpf() : "",
+                    atendimento.getObservacoes()
+                );
+                lista.add(dto);
+            }
+
+            return ResponseEntity.ok(lista);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
