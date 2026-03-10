@@ -2,12 +2,20 @@ package br.com.tonypool.auth;
 
 import br.com.tonypool.auth.dto.EnderecoDTO;
 import br.com.tonypool.auth.service.EnderecoProducer;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+ 
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +29,19 @@ public class EnderecoProducerIntegrationTest {
     private EnderecoProducer enderecoProducer;
 
     private final RestTemplate restTemplate = new RestTemplateBuilder().build();
+    private static WireMockServer wireMockServer;
+    
+    @BeforeAll
+    static void setup() {
+        wireMockServer = new WireMockServer(8081); // mesma porta do cliente-service
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 8081);
+    }
+
+    @AfterAll
+    static void teardown() {
+        wireMockServer.stop();
+    }
 
     @Test
     public void deveEnviarEnderecoViaKafkaEConfirmarPersistenciaNoClienteService() throws InterruptedException {
@@ -35,6 +56,13 @@ public class EnderecoProducerIntegrationTest {
         dto.setCidade("Rio de Janeiro");
         dto.setUf("RJ");
         dto.setCep("12345-678");
+        
+     // Stub da API simulada
+        wireMockServer.stubFor(get(urlEqualTo("/clientes/1/enderecos"))
+            .willReturn(aResponse()
+                .withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("[{\"logradouro\":\"Rua Teste\",\"numero\":\"123\"}]")));
 
         // 2. Envia mensagem Kafka
         enderecoProducer.enviarEndereco(idCliente, dto);
