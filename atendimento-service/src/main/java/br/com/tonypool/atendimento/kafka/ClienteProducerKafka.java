@@ -5,11 +5,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClienteProducer {
+public class ClienteProducerKafka {
 
     private final KafkaTemplate<String, ClienteRequest> kafkaTemplate;
 
-    public ClienteProducer(KafkaTemplate<String, ClienteRequest> kafkaTemplate) {
+    public ClienteProducerKafka(KafkaTemplate<String, ClienteRequest> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
