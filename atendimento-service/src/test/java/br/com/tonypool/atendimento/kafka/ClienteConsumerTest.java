@@ -1,6 +1,8 @@
 package br.com.tonypool.atendimento.kafka;
 
 import br.com.tonypool.atendimento.dto.ClienteDTO;
+import br.com.tonypool.atendimento.requests.ClienteRequest;
+
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
@@ -21,13 +23,16 @@ import java.util.Map;
 class ClienteConsumerTest {
 
     @Autowired
-    private KafkaTemplate<String, ClienteDTO> kafkaTemplate;
+    private KafkaTemplate<String, ClienteRequest> kafkaTemplate;
 
     @Test
-    void deveConsumirClienteDTO() throws InterruptedException {
-        ClienteDTO cliente = new ClienteDTO(1, "Tonypool", "12345678900", "tony@example.com", "21999999999", true);
+    void deveConsumirClienteRequest() throws InterruptedException {
+        ClienteRequest cliente = new ClienteRequest();
+        cliente.setTipoConsulta("CPF");
+        cliente.setValor("12345678900");
+        cliente.setCorrelationId("abc-123");
 
-        kafkaTemplate.send("cliente-consulta", cliente.getCpf(), cliente);
+        kafkaTemplate.send("cliente-consulta", cliente.getValor(), cliente);
 
         // Aguarda alguns segundos para o consumidor processar
         Thread.sleep(2000);
