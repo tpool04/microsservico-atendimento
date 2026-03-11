@@ -20,7 +20,7 @@ import java.util.Map;
 @SpringBootTest
 @EmbeddedKafka(partitions = 1, topics = { "cliente-consulta" })
 @DirtiesContext
-class ClienteConsumerTest {
+class ClienteConsumerKafkaTest {
 
     @Autowired
     private KafkaTemplate<String, ClienteRequest> kafkaTemplate;

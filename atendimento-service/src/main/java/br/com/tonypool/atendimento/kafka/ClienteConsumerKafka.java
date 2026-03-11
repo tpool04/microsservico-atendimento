@@ -5,10 +5,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClienteConsumer {
+public class ClienteConsumerKafka {
 
     @KafkaListener(topics = "cliente-consulta", groupId = "grupo-atendimento")
     public void consumirCliente(ClienteRequest cliente) {
-        System.out.println("📩 ClienteRequest consumido: " + cliente);
+        System.out.println("ClienteRequest consumido: " + cliente);
     }
 }
