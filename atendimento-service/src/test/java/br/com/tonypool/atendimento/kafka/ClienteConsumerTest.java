@@ -32,12 +32,12 @@ class ClienteConsumerTest {
         cliente.setValor("12345678900");
         cliente.setCorrelationId("abc-123");
 
-        kafkaTemplate.send("cliente-consulta", cliente.getValor(), cliente);
+        kafkaTemplate.send("cliente-consulta", cliente.getCorrelationId(), cliente);
 
         // Aguarda alguns segundos para o consumidor processar
         Thread.sleep(2000);
 
         // Aqui você pode verificar efeitos colaterais, logs ou mocks
-        System.out.println("✅ Mensagem enviada para o tópico cliente-consulta");
+        System.out.println("Mensagem enviada para o tópico cliente-consulta");
     }
 }
