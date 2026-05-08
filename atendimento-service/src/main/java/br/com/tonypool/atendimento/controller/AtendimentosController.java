@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.tonypool.atendimento.dto.ClienteDTO;
+import br.com.tonypool.atendimento.kafka.AtendimentoEvent;
 import br.com.tonypool.atendimento.model.Atendimento;
 
 import br.com.tonypool.atendimento.model.Profissional;
@@ -49,6 +50,9 @@ import br.com.tonypool.atendimento.security.TokenSecurity;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import br.com.tonypool.atendimento.service.AtendimentoProducer;
+
 import br.com.tonypool.atendimento.service.ClienteProducer;
 import br.com.tonypool.atendimento.cache.ClienteCache;
 
@@ -59,6 +63,9 @@ public class AtendimentosController {
 
 	@Autowired
 	private IAtendimentoRepository atendimentoRepository;
+	
+	@Autowired
+	private AtendimentoProducer atendimentoProducer;
 
 	@Autowired
 	private IServicoRepository servicoRepository;
@@ -194,6 +201,7 @@ public class AtendimentosController {
 		            response.setNomeProfissional(atendimento.getProfissional().getNome());
 		            response.setTelefoneProfissional(atendimento.getProfissional().getTelefone());
 		            response.setObservacoes(atendimento.getObservacoes());
+		            response.setStatus(atendimento.getStatus());
 		            lista.add(response);
 		        }
 
@@ -414,7 +422,8 @@ public class AtendimentosController {
                         atendimento.getProfissional().getTelefone(),
                         clienteDTO != null ? clienteDTO.getNome() : "",
                         clienteDTO != null ? clienteDTO.getCpf() : "",
-                        atendimento.getObservacoes()
+                        atendimento.getObservacoes(),
+                        atendimento.getStatus()
                     );
                     dtoList.add(dto);
                 }
@@ -458,7 +467,8 @@ public class AtendimentosController {
                     atendimento.getProfissional().getTelefone(),
                     clienteDTO != null ? clienteDTO.getNome() : "",
                     clienteDTO != null ? clienteDTO.getCpf() : "",
-                    atendimento.getObservacoes()
+                    atendimento.getObservacoes(),
+                    atendimento.getStatus()
                 );
                 lista.add(dto);
             }
@@ -466,6 +476,41 @@ public class AtendimentosController {
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @ApiOperation("Endpoint para finalizar um atendimento.")
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<String> finalizar(@PathVariable Integer id) {
+        try {
+            Atendimento atendimento = atendimentoRepository.findById(id)
+                    .orElseThrow(() -> new Exception("Atendimento não encontrado."));
+
+            if ("FINALIZADO".equals(atendimento.getStatus())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Atendimento já está finalizado.");
+            }
+
+            atendimento.setStatus("FINALIZADO");
+            atendimentoRepository.save(atendimento);
+
+            // Enviar evento Kafka
+            AtendimentoEvent event = new AtendimentoEvent(
+                    atendimento.getIdAtendimento(),
+                    atendimento.getProfissional().getIdProfissional(),
+                    atendimento.getProfissional().getNome(),
+                    atendimento.getDataHora(),
+                    "ATENDIMENTO_FINALIZADO",   // tipo do evento
+                    "OK"                        // status do processamento
+            );
+
+            atendimentoProducer.enviarEventoAtendimento(event);
+
+            return ResponseEntity.ok("Atendimento finalizado com sucesso.");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao finalizar atendimento: " + e.getMessage());
         }
     }
 

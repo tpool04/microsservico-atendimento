@@ -16,4 +16,5 @@ import lombok.ToString;
 public class ClienteAtendimentosDTO {
     private ClienteDTO cliente;
     private List<AtendimentoGetResponse> atendimentos;
+    private List<AtendimentoGetResponse> status;
 }

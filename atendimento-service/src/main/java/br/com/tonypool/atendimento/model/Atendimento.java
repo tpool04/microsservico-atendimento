@@ -50,6 +50,9 @@ public class Atendimento {
 	@ManyToOne
 	@JoinColumn(name = "idprofissional", nullable = false)
 	private Profissional profissional;
+	
+	@Column(name = "status", length = 20, nullable = false)
+	private String status = "ABERTO";
 }
 
 
