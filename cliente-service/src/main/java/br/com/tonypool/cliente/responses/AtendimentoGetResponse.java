@@ -17,5 +17,6 @@ public class AtendimentoGetResponse {
 	private String nomeCliente;
 	private String cpfCliente;
 	private String observacoes;
+	private String status;
 }
 

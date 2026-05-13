@@ -1,4 +1,4 @@
-# Etapa de build
+# Etapa de build senha postgres=admin
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /build
 COPY . ./

@@ -6,6 +6,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import br.com.tonypool.atendimento.kafka.AtendimentoEvent;
 
+
+
 @Service
 public class AtendimentoProducer {
 

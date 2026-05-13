@@ -493,12 +493,35 @@ public class AtendimentosController {
 
             atendimento.setStatus("FINALIZADO");
             atendimentoRepository.save(atendimento);
+            
+            String correlationId = UUID.randomUUID().toString();
+            clienteProducer.solicitarClientePorId(atendimento.getIdCliente(), correlationId);
+
+            ClienteDTO cliente = null;
+            int tentativas = 0;
+
+            while (tentativas < 50) {
+                cliente = clienteCache.buscar(correlationId);
+                if (cliente != null) break;
+                Thread.sleep(100);
+                tentativas++;
+            }
+
+            clienteCache.remover(correlationId);
+
+            if (cliente == null) {
+                throw new Exception("Cliente não retornou em tempo hábil.");
+            }
 
             // Enviar evento Kafka
             AtendimentoEvent event = new AtendimentoEvent(
                     atendimento.getIdAtendimento(),
                     atendimento.getProfissional().getIdProfissional(),
                     atendimento.getProfissional().getNome(),
+                    atendimento.getIdCliente(),
+                    cliente.getNome(),          
+                    atendimento.getServico().getIdServico(),     
+                    atendimento.getServico().getNome(),  
                     atendimento.getDataHora(),
                     "ATENDIMENTO_FINALIZADO",   // tipo do evento
                     "OK"                        // status do processamento

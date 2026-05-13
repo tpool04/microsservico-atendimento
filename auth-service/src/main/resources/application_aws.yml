@@ -10,7 +10,7 @@ spring:
       matching-strategy: ant_path_matcher
 
   datasource:
-    url: jdbc:postgresql://atendimentosapi.cjcgo22g2ps6.us-east-2.rds.amazonaws.com:5432/atendimentosapi?sslmode=require
+    url: jdbc:postgresql://atendimentosapi.c83smciywih5.us-east-1.rds.amazonaws.com:5432/postgres?sslrootcert=C:/java/codigoAtendimento/microsservico-atendimento/global-bundle.pem
     username: dbadmin
     password: Antoma04!
     driver-class-name: org.postgresql.Driver
